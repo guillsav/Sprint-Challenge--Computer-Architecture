@@ -115,14 +115,12 @@ class CPU:
                     self.pc = self.reg[operand_a]
                 else:
                     self.pc += 2
-
             elif IR == JNE:
                 if self.fl != 0b00000001:
                     reg_addr = operand_a  # Jump to the address stored in the given register.
                     self.pc = self.reg[reg_addr]
                 else:
                     self.pc += 2
-
             elif IR == PUSH:
                 self.reg[self.sp] -= 1  # Decrement SP.
                 value = self.reg[operand_a]  # Get the register number operand.
