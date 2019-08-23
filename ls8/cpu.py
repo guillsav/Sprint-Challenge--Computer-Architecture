@@ -52,44 +52,17 @@ class CPU:
             elif self.reg[reg_a] > self.reg[reg_b]:
                 # 000000G0
                 self.fl = 0b00000010
-        return
-        # else:
-        #     raise Exception("Unsupported ALU operation")
-
-    def trace(self):
-        """
-        Handy function to print out the CPU state. You might want to call this
-        from run() if you need help debugging.
-        """
-
-        print(f"TRACE: %02X | %02X %02X %02X |" % (
-            self.pc,
-            # self.fl,
-            # self.ie,
-            self.ram_read(self.pc),
-            self.ram_read(self.pc + 1),
-            self.ram_read(self.pc + 2)
-        ), end='')
-
-        for i in range(8):
-            print(" %02X" % self.reg[i], end='')
-
-        print()
 
     def run(self):
 
         LDI = 0b10000010
-        CALL = 0b01010000
         CMP = 0b10100111
         HLT = 0b00000001
         JEQ = 0b01010101
         JMP = 0b01010100
         JNE = 0b01010110
-        NOP = 0b00000000
-        POP = 0b01000110
         PRN = 0b01000111
-        PUSH = 0b01000101
-        RET = 0b00010001
+
 
         running = True
         self.reg[self.sp] = 0b11111111
@@ -121,27 +94,6 @@ class CPU:
                     self.pc = self.reg[reg_addr]
                 else:
                     self.pc += 2
-            elif IR == PUSH:
-                self.reg[self.sp] -= 1  # Decrement SP.
-                value = self.reg[operand_a]  # Get the register number operand.
-                # Store value in ram at the SP.
-                self.ram[self.reg[self.sp]] = value
-                self.pc += 2
-            elif IR == POP:
-                # Get the value from ram at AT.
-                value = self.ram[self.reg[self.sp]]
-                # Store the value from the stack in the register.
-                self.reg[operand_a] = value
-                self.reg[self.sp] += 1  # Increment SP.
-                self.pc += 2
-            elif IR == CALL:
-                self.reg[self.sp] -= 1
-                self.ram[self.reg[self.sp]] = self.pc + 2
-                self.pc = self.reg[operand_a]
-            elif IR == RET:
-                # Set the pc to the return address.
-                self.pc = self.ram[self.reg[self.sp]]
-                self.reg[self.sp] += 1
             elif IR == HLT:
                 running = False
             else:
